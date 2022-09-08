@@ -1,0 +1,51 @@
+.container {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    perspective: 100000px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.cube {
+    width: inherit;
+    height:inherit;
+    transform-style: preserve-3d;
+}
+
+.side {
+    position: absolute;
+    width: inherit;
+    height: inherit;
+}
+
+.front {
+    transform: translateZ(100px);
+    background: green;
+}
+
+.back {
+    transform: rotateY(180deg) translateZ(100px);
+    background: blue;
+}
+
+.right {
+    transform: rotateY(90deg) translateZ(100px);
+    background: red;
+}
+
+.left {
+    transform: rotateY(-90deg) translateZ(100px);
+    background: orange;
+}
+
+.top {
+    transform: rotateX(90deg) translateZ(100px);
+    background: yellow;
+}
+
+.bottom {
+    transform: rotateX(-90deg) translateZ(100px);
+    background: white;
+}
