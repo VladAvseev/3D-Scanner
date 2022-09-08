@@ -1,0 +1,13 @@
+.body {
+    width: 100%;
+    height: 120px;
+    background: #ffa500;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    padding: 0 32px;
+}
+
+.title {
+    font-size: 48px;
+}

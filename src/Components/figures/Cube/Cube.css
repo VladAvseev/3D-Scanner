@@ -47,5 +47,5 @@
 
 .bottom {
     transform: rotateX(-90deg) translateZ(100px);
-    background: white;
+    background: #f1f1f1;
 }

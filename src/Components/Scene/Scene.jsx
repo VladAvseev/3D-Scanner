@@ -15,79 +15,77 @@ const initialCubePeaksState = {
     RDB: { x: 100, y: -100, z: -100, adjacentPeaks: ['LDB', 'RTB', 'RDF'] }
 }
 
-const Scene = ({ setSlicePeaks }) => {
-    const [cubeRotate, setCubeRotate] = useState({
-        x: 0,
-        y: 0,
-        z: 0
-    });
+const Scene = ({ setSlicePeaks, settingState, setSettingState }) => {
     const [cubePeaks, setCubePeaks] = useState({initialCubePeaksState});
-    const [scannerPosition, setScannerPosition] = useState(295);
 
     const handleCubeKeyDown = useCallback((event) => {
         const ROTATE_SPEED = 1;
 
         switch (event.keyCode) {
             case 65:
-                setCubeRotate((prev) => {
-                    return {...prev, y: prev.y - ROTATE_SPEED}
+                setSettingState((prev) => {
+                    return {...prev, cubeRotate: {...prev.cubeRotate, y: prev.cubeRotate.y - ROTATE_SPEED}}
                 });
                 break;
             case 68:
-                setCubeRotate((prev) => {
-                    return {...prev, y: prev.y + ROTATE_SPEED}
+                setSettingState((prev) => {
+                    return {...prev, cubeRotate: {...prev.cubeRotate, y: prev.cubeRotate.y + ROTATE_SPEED}}
                 });
                 break;
             case 87:
-                setCubeRotate((prev) => {
-                    return {...prev, x: prev.x + ROTATE_SPEED}
+                setSettingState((prev) => {
+                    return {...prev, cubeRotate: {...prev.cubeRotate, x: prev.cubeRotate.x + ROTATE_SPEED}}
                 });
                 break;
             case 83:
-                setCubeRotate((prev) => {
-                    return {...prev, x: prev.x - ROTATE_SPEED}
+                setSettingState((prev) => {
+                    return {...prev, cubeRotate: {...prev.cubeRotate, x: prev.cubeRotate.x - ROTATE_SPEED}}
                 });
                 break;
             case 69:
-                setCubeRotate((prev) => {
-                    return {...prev, z: prev.z + ROTATE_SPEED}
+                setSettingState((prev) => {
+                    return {...prev, cubeRotate: {...prev.cubeRotate, z: prev.cubeRotate.z + ROTATE_SPEED}}
                 });
                 break;
             case 81:
-                setCubeRotate((prev) => {
-                    return {...prev, z: prev.z - ROTATE_SPEED}
+                setSettingState((prev) => {
+                    return {...prev, cubeRotate: {...prev.cubeRotate, z: prev.cubeRotate.z - ROTATE_SPEED}}
                 });
                 break;
             case 38:
-                if (scannerPosition < 300) {
-                    setScannerPosition((prev) => prev + 1);
+                if (settingState.scannerPosition < 300) {
+                    setSettingState((prev) => {
+                        return {...prev, scannerPosition: prev.scannerPosition + 1}
+                    });
                 }
                 break;
             case 40:
-                if (scannerPosition > -300) {
-                    setScannerPosition((prev) => prev - 1);
+                if (settingState.scannerPosition > -300) {
+                    setSettingState((prev) => {
+                        return {...prev, scannerPosition: prev.scannerPosition - 1}
+                    });
                 }
                 break;
         }
-    }, [scannerPosition]);
+    }, [settingState.scannerPosition]);
 
     const rotateX = (peak) => {
         const x = peak.x;
-        const y = peak.y * Math.cos(cubeRotate.x * Math.PI/180) - peak.z * Math.sin(cubeRotate.x * Math.PI/180);
-        const z = peak.y * Math.sin(cubeRotate.x * Math.PI/180) + peak.z * Math.cos(cubeRotate.x * Math.PI/180);
+        const y = peak.y * Math.cos(settingState.cubeRotate.x * Math.PI/180) - peak.z * Math.sin(settingState.cubeRotate.x * Math.PI/180);
+        const z = peak.y * Math.sin(settingState.cubeRotate.x * Math.PI/180) + peak.z * Math.cos(settingState.cubeRotate.x * Math.PI/180);
         return {x, y, z}
     }
 
     const rotateY = (peak) => {
-        const x = peak.x * Math.cos(cubeRotate.y * Math.PI/180) + peak.z * Math.sin(cubeRotate.y * Math.PI/180);
+        const x = peak.x * Math.cos(settingState.cubeRotate.y * Math.PI/180) + peak.z * Math.sin(settingState.cubeRotate.y * Math.PI/180);
         const y = peak.y;
-        const z = -peak.x * Math.sin(cubeRotate.y * Math.PI/180) + peak.z * Math.cos(cubeRotate.y * Math.PI/180);
+        const z = -peak.x * Math.sin(settingState.cubeRotate.y * Math.PI/180) + peak.z * Math.cos(settingState.cubeRotate.y * Math.PI/180);
         return {x, y, z}
     }
 
     const rotateZ = (peak) => {
-        const x = peak.x * Math.cos(cubeRotate.z * Math.PI/180) - peak.y * Math.sin(cubeRotate.z * Math.PI/180);
-        const y = peak.x * Math.sin(cubeRotate.z * Math.PI/180) + peak.y * Math.cos(cubeRotate.z * Math.PI/180);
+        const x = peak.x * Math.cos(settingState.cubeRotate.z * Math.PI/180) - peak.y * Math.sin(settingState.cubeRotate.z * Math.PI/180);
+        const y = peak.x * Math.sin(settingState.cubeRotate.z * Math.PI/180) + peak.y * Math.cos(settingState.cubeRotate.z * Math.PI/180);
         const z = peak.z;
         return {x, y, z}
     }
@@ -103,22 +101,21 @@ const Scene = ({ setSlicePeaks }) => {
             newPeaks[key] = {...peak, adjacentPeaks: initialCubePeaksState[key].adjacentPeaks};
         }
         setCubePeaks(newPeaks);
-        console.log(cubeRotate);
-    }, [cubeRotate]);
+    }, [settingState.cubeRotate]);
 
     useEffect(() => {
         const slicePeaks = [];
         for (let key in cubePeaks) {
-            if (cubePeaks[key].y === scannerPosition) {
+            if (cubePeaks[key].y === settingState.scannerPosition) {
                 slicePeaks.push({
                     x: cubePeaks[key].x,
                     y: cubePeaks[key].z
                 })
             }
-            if (cubePeaks[key].y > scannerPosition) {
+            if (cubePeaks[key].y > settingState.scannerPosition) {
                 cubePeaks[key].adjacentPeaks.forEach((adjacentPeak) => {
-                    if (cubePeaks[adjacentPeak].y < scannerPosition) {
-                        const attitude = (scannerPosition - cubePeaks[adjacentPeak].y) / (cubePeaks[key].y - scannerPosition) ;
+                    if (cubePeaks[adjacentPeak].y < settingState.scannerPosition) {
+                        const attitude = (settingState.scannerPosition - cubePeaks[adjacentPeak].y) / (cubePeaks[key].y - settingState.scannerPosition) ;
                         const x = (cubePeaks[adjacentPeak].x + attitude * cubePeaks[key].x) / (1 + attitude);
                         const y = (cubePeaks[adjacentPeak].z + attitude * cubePeaks[key].z) / (1 + attitude);
                         slicePeaks.push({ x, y});
@@ -127,7 +124,7 @@ const Scene = ({ setSlicePeaks }) => {
             }
         }
         setSlicePeaks(slicePeaks);
-    }, [scannerPosition, cubeRotate]);
+    }, [settingState.scannerPosition, settingState.cubeRotate]);
 
     return (
         <div
@@ -135,8 +132,8 @@ const Scene = ({ setSlicePeaks }) => {
             tabIndex={0}
             onKeyDown={handleCubeKeyDown}
         >
-            <Cube cubeRotate={cubeRotate}/>
-            <Scanner scannerPosition={scannerPosition}/>
+            <Cube cubeRotate={settingState.cubeRotate}/>
+            <Scanner scannerPosition={settingState.scannerPosition}/>
         </div>
     );
 };

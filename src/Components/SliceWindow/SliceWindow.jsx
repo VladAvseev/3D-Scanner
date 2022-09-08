@@ -23,7 +23,6 @@ const SliceWindow = ({ slicePeaks }) => {
     useEffect(() => {
         if (slicePeaks.length) {
             draw(slicePeaks);
-            console.log(slicePeaks);
         } else {
             const ctx = canvas.current.getContext('2d');
             ctx.clearRect(0, 0, canvas.current.width, canvas.current.height);
