@@ -1,0 +1,8 @@
+.scanner {
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    opacity: 0.5;
+    background: aqua;
+    transform: translateZ(200px);
+}
