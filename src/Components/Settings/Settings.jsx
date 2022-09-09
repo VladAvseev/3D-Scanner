@@ -1,11 +1,37 @@
 import React from 'react';
 import './Settings.css';
 
+const figures = {
+    cube: 'cube',
+    pyramid: 'pyramid'
+}
+
 const Settings = ({settingState, setSettingState}) => {
+
 
     return (
         <div className={'setting_body'}>
             <h1>Settings</h1>
+            <div className={'input__item'}>
+                <label
+                    htmlFor="figureType"
+                    style={{margin: '0 24px 0 0'}}
+                >Choose figure:</label>
+                <select
+                    style={{width: '50%'}}
+                    id="figureType"
+                    onChange={(event) => {
+                        setSettingState((prev) => {
+                            return {...prev, figure: event.target.value}
+                        });
+                    }
+                    }
+                >
+                    <option value={null} defaultValue={true}></option>
+                    <option value={figures.cube}>Cube</option>
+                    <option value={figures.pyramid}>Pyramid</option>
+                </select>
+            </div>
             <div className={'input__item'}>
                 <label htmlFor="scanner">Scanner position:</label>
                 <input

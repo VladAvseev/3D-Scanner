@@ -19,7 +19,7 @@ const App = () => {
     return (
         <>
             <Header />
-            <div style={{width: '100%', margin: '50px 0 0 0', display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
+            <div className={'wrapper'}>
                 <Scene setSlicePeaks={setSlicePeaks} settingState={settingState} setSettingState={setSettingState}/>
                 <Settings settingState={settingState} setSettingState={setSettingState}/>
                 <SliceWindow slicePeaks={slicePeaks}/>

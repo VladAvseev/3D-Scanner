@@ -1,0 +1,31 @@
+
+.pyramid {
+    width: inherit;
+    height:inherit;
+    transform-style: preserve-3d;
+}
+
+.pyramid__side {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 100px solid transparent;
+    border-right: 100px solid transparent;
+}
+
+.pyramid__front {
+    transform: rotateX(19deg) translateZ(53px) translateY(25px);
+    border-bottom: 173px solid green;
+}
+.pyramid__right {
+    transform: rotateY(120deg) rotateX(19deg) translateX(-25px) translateZ(12px) translateY(10px);
+    border-bottom: 173px solid red;
+}
+.pyramid__left {
+    transform: rotateY(-120deg) rotateX(19deg) translateX(25px) translateZ(12px) translateY(10px);
+    border-bottom: 173px solid yellow;
+}
+.pyramid__bottom {
+    transform: rotateX(90deg) translateZ(-87px);
+    border-bottom: 173px solid blue;
+}

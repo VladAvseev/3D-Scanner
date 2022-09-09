@@ -3,20 +3,11 @@ import 'matrix-js';
 import './Scene.css';
 import Cube from "../figures/Cube/Cube";
 import Scanner from "../Scanner/Scanner";
+import Pyramid from "../figures/Pyramid/Pyramid";
 
-const initialCubePeaksState = {
-    LTF: { x: -100, y: 100, z: 100, adjacentPeaks: ['RTF', 'LDF', 'LTB'] },
-    RTF: { x: 100, y: 100, z: 100, adjacentPeaks: ['LTF', 'RDF', 'RTB'] },
-    LDF: { x: -100, y: -100, z: 100, adjacentPeaks: ['RDF', 'LTF', 'LDB'] },
-    RDF: { x: 100, y: -100, z: 100, adjacentPeaks: ['LDF', 'RTF', 'RDB'] },
-    LTB: { x: -100, y: 100, z: -100, adjacentPeaks: ['RTB', 'LDB', 'LTF'] },
-    RTB: { x: 100, y: 100, z: -100, adjacentPeaks: ['LTB', 'RDB', 'RTF'] },
-    LDB: { x: -100, y: -100, z: -100, adjacentPeaks: ['RDB', 'LTB', 'LDF'] },
-    RDB: { x: 100, y: -100, z: -100, adjacentPeaks: ['LDB', 'RTB', 'RDF'] }
-}
-
-const Scene = ({ setSlicePeaks, settingState, setSettingState }) => {
-    const [cubePeaks, setCubePeaks] = useState({initialCubePeaksState});
+const Scene = ({ setSlicePeaks, settingState, setSettingState, }) => {
+    const [initialFigurePeaks, setInitialFigurePeaks] = useState(null);
+    const [figurePeaks, setFigurePeaks] = useState(null);
 
     const handleCubeKeyDown = useCallback((event) => {
         const ROTATE_SPEED = 1;
@@ -95,29 +86,33 @@ const Scene = ({ setSlicePeaks, settingState, setSettingState }) => {
     }
 
     useEffect(() => {
+        setFigurePeaks(initialFigurePeaks);
+    }, [initialFigurePeaks]);
+
+    useEffect(() => {
         const newPeaks = {}
-        for (let key in initialCubePeaksState) {
-            const peak = updatePeak(initialCubePeaksState[key]);
-            newPeaks[key] = {...peak, adjacentPeaks: initialCubePeaksState[key].adjacentPeaks};
+        for (let key in initialFigurePeaks) {
+            const peak = updatePeak(initialFigurePeaks[key]);
+            newPeaks[key] = {...peak, adjacentPeaks: initialFigurePeaks[key].adjacentPeaks};
         }
-        setCubePeaks(newPeaks);
+        setFigurePeaks(newPeaks);
     }, [settingState.cubeRotate]);
 
     useEffect(() => {
         const slicePeaks = [];
-        for (let key in cubePeaks) {
-            if (cubePeaks[key].y === settingState.scannerPosition) {
+        for (let key in figurePeaks) {
+            if (figurePeaks[key].y === settingState.scannerPosition) {
                 slicePeaks.push({
-                    x: cubePeaks[key].x,
-                    y: cubePeaks[key].z
+                    x: figurePeaks[key].x,
+                    y: figurePeaks[key].z
                 })
             }
-            if (cubePeaks[key].y > settingState.scannerPosition) {
-                cubePeaks[key].adjacentPeaks.forEach((adjacentPeak) => {
-                    if (cubePeaks[adjacentPeak].y < settingState.scannerPosition) {
-                        const attitude = (settingState.scannerPosition - cubePeaks[adjacentPeak].y) / (cubePeaks[key].y - settingState.scannerPosition) ;
-                        const x = (cubePeaks[adjacentPeak].x + attitude * cubePeaks[key].x) / (1 + attitude);
-                        const y = (cubePeaks[adjacentPeak].z + attitude * cubePeaks[key].z) / (1 + attitude);
+            if (figurePeaks[key].y > settingState.scannerPosition) {
+                figurePeaks[key].adjacentPeaks.forEach((adjacentPeak) => {
+                    if (figurePeaks[adjacentPeak].y < settingState.scannerPosition) {
+                        const attitude = (settingState.scannerPosition - figurePeaks[adjacentPeak].y) / (figurePeaks[key].y - settingState.scannerPosition) ;
+                        const x = (figurePeaks[adjacentPeak].x + attitude * figurePeaks[key].x) / (1 + attitude);
+                        const y = (figurePeaks[adjacentPeak].z + attitude * figurePeaks[key].z) / (1 + attitude);
                         slicePeaks.push({ x, y});
                     }
                 })
@@ -132,7 +127,15 @@ const Scene = ({ setSlicePeaks, settingState, setSettingState }) => {
             tabIndex={0}
             onKeyDown={handleCubeKeyDown}
         >
-            <Cube cubeRotate={settingState.cubeRotate}/>
+            {settingState.figure === 'cube'
+                ? (
+                    <Cube cubeRotate={settingState.cubeRotate} setFigurePeaks={setInitialFigurePeaks}/>
+                ) : settingState.figure === 'pyramid' ?
+                    (
+                        <Pyramid cubeRotate={settingState.cubeRotate} setFigurePeaks={setInitialFigurePeaks}/>
+                    )
+                        : null
+            }
             <Scanner scannerPosition={settingState.scannerPosition}/>
         </div>
     );
